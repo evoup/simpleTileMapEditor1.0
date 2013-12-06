@@ -1,0 +1,98 @@
+开始学习CSplitterWnd 类
+下面的几篇教程有的不行,有的适合以后看.
+
+(以后看)http://69.10.233.10/KB/splitter/flatsplitter.aspx
+CSplitterWnd这个类,但是这个方法是加强版,是基于MFC标准的CSplitterWnd再写的.
+
+这里还有个超强的MFC GUI应用例子http://69.10.233.10/KB/applications/todolist2.aspx
+
+(不行!)下面这篇<<用MFC创建通用窗体分割框架>>
+http://www.donews.com/Content/200602/3ac4f2c125e24e10bfe3245ef3d8506e.shtm
+
+这里是全部MSDN上关于MFC的示例,但是都是说明,真正的例子在产品的例子里,真是万恶微软
+http://msdn.microsoft.com/zh-cn/library/482ck6x8.aspx
+
+
+用VC++实现应用程序窗口的任意分割
+http://c.chinaitlab.com/vc/200806/749924.html
+
+
+要加上重载函数,注意先声明
+
+在使用RUNTIME_CLASS的时候报is not a class or namespace name
+
+说是作用域的问题
+是要加上要分割的视类的头文件
+
+注意看一丹麦一高手的例子里
+#include "stdafx.h"
+#include "FlatSplitter_Demo.h"
+
+#include "MainFrm.h"
+#include "LeftView.h"
+#include "RightView.h"
+
+顺序是这样的，然后是这样重载的
+BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/,
+	CCreateContext* pContext)
+{
+	if (!m_wndSplitterLR.CreateStatic(this, 1, 2))
+	{
+		TRACE0("Failed to CreateStaticSplitter\n");
+		return FALSE;
+	}
+
+	if (!m_wndSplitterLR.CreateView(0, 1, RUNTIME_CLASS(CRightView), CSize(0, 0), pContext))
+	{
+		TRACE0("Failed to create first pane\n");
+		return FALSE;
+	}
+
+	m_wndSplitterLR.SetColumnInfo(0, 200, 0);
+
+	if (!m_wndSplitterUD.CreateStatic(&m_wndSplitterLR, 2, 1, WS_CHILD | WS_VISIBLE, m_wndSplitterLR.IdFromRowCol(0, 0)))
+	{
+		TRACE0("Failed to CreateStaticSplitter\n");
+		return FALSE;
+	}
+	if (!m_wndSplitterUD.CreateView(0, 0, pContext->m_pNewViewClass, CSize(0, 200), pContext))
+	{
+		TRACE0("Failed to create second pane\n");
+		return FALSE;
+	}
+	if (!m_wndSplitterUD.CreateView(1, 0, RUNTIME_CLASS(CLeftView), CSize(0, 0), pContext))
+	{
+		TRACE0("Failed to create third pane\n");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+注意先前那几个变量要申明为protect类型
+主要不单单是重载这么简单，要用MFC的方法，因为有消息映射在里面，比如
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CMainFrame)
+	public:
+	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+	//}}AFX_VIRTUAL
+
+其实只要添加一个虚函数就得了，正确的方法是在CMainFrame上单击右键，然后选择添加虚函数就可以了，自己添加函数则还要注意要在上面的消息映射里添加函数的声明，一般用MFC的添加虚函数就成了，检查一下MainFrm.h里映射是不是public的。
+
+这个函数的声明在AFXWIN.H 里，protected:
+	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
+
+需要重载成公有方法，而且第一个参数要注释掉！！
+
+
+###########################################
+上面这篇教程不行，看这篇
+http://www.cppblog.com/assist/archive/2009/02/24/24736.html?opt=admin
+
+注意#include <afxcview.h>
+注意几个头文件的添加,否则回报告类找不到定义.
+CreateStatic就是创建静态分割窗口第一个参数是如果在框架里，就设置为this。第二个参数是几行，第三个参数是几列。
+
+CreateView就是对分割的每个区域定义视图，第一个和第二个参数这个区域里面就是多少行和列。下一个参数RUNTIME_CLASS里面就是方一些Cwnd下派生的类，比如CView等等，所以我们看到这些分割的区域里，都是一些窗口！第四个参数就是制定该区域的大小，
+
+

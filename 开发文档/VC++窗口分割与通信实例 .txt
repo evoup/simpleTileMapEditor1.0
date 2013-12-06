@@ -1,0 +1,200 @@
+VC++窗口分割与通信实例 
+1.使用MFC建立一个SDI(基类为View)，工程名为SplitWndDemo；
+
+2.在 CMainFrame中增加变量
+
+public:
+   CSplitterWnd m_wndSplitter;
+
+3.增加左右视图类，CLeftTreeView:public: CTreeView,如下：
+
+#include <afxcview.h>
+/////////////////////////////////////////////////////////////////////////////
+// CLeftTreeView view
+#include "TestDlg.h"
+class CLeftTreeView : public CTreeView
+
+#include "TestDlg.h"
+/////////////////////////////////////////////////////////////////////////////
+// CRightView view
+
+CRightView : public CView如下：
+
+class CRightView : public CView
+
+4.重载CMainFrame的OnCreateClient（）函数
+
+BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext) 
+{
+ // TODO: Add your specialized code here and/or call the base class
+ // create splitter window
+ if (!m_wndSplitter.CreateStatic(this, 1, 2))
+  return FALSE;
+
+ if (!m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(CLeftTreeView),CSize(200, 100), pContext) ||
+  !m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CRightView), CSize(100, 100), pContext))
+ {
+  m_wndSplitter.DestroyWindow();
+  return FALSE;
+ }
+ //set the target for mapped messages
+// ((CFormLeft*)m_wndSplitter.GetPane(0,0))->SetTarget(m_wndSplitter.GetPane(0,1));
+
+ return TRUE;
+}
+
+5.插入一个对话框，假如一个CEdit控件，控件名为IDC_EDIT1，类名为CTestDlg；
+
+6.在CLeftTreeView中增加函数
+
+HTREEITEM FindItem(long lItemData);
+
+HTREEITEM CLeftTreeView::FindItem(long lItemData)
+{
+ // the tree object
+ CTreeCtrl   &tTree = this->GetTreeCtrl ();
+ // the current item
+    HTREEITEM    tiItem= tTree.GetNextItem(TVGN_ROOT,TVGN_ROOT);
+ long      lCurrentData;
+ 
+    while (tiItem)
+ {
+  tTree.Expand(tiItem,TVE_EXPAND);
+  
+  lCurrentData = (long)tTree.GetItemData(tiItem);
+  
+  if( lCurrentData == lItemData )
+   return tiItem;
+  tiItem= tTree.GetNextItem(tiItem,TVGN_NEXTVISIBLE);
+ }
+ 
+ return NULL;
+ 
+}
+
+7.在CLeftTreeView::OnInitialUpdate() 函数中添加代码：
+
+void CLeftTreeView::OnInitialUpdate() 
+{
+ CTreeCtrl   &tTree = this->GetTreeCtrl ();
+ 
+ // variables to compute new items
+ long  lItemTitle;
+ CString  sItemTitle;
+ char  cItemTitle[10];
+ int   iItemSize;
+ int   iCptr;
+ 
+ // item created
+ HTREEITEM tiTestNode;
+ HTREEITEM tiParentNode;
+ 
+ CTreeView::OnInitialUpdate();
+ 
+ // update the tree style
+    tTree.ModifyStyle ( 0, TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT);
+ 
+    
+ // Add items to the tree
+ for(lItemTitle=1; lItemTitle<=999; lItemTitle+=2)
+ {
+  ltoa(lItemTitle,cItemTitle,10);
+  sItemTitle = "";
+  iItemSize= strlen(cItemTitle);
+  
+  sItemTitle=sItemTitle+cItemTitle[0];
+  
+  for(iCptr=1; iCptr<iItemSize; iCptr++)
+  {
+   sItemTitle=sItemTitle+"."+cItemTitle[iCptr];
+  }
+  // insert the node
+  tiParentNode = FindItem((long)(lItemTitle/10));
+  //for the first level nodes
+  if((long)(lItemTitle/10)==0)
+  {
+   tiTestNode = tTree.InsertItem(sItemTitle);
+   tTree.SetItemData(tiTestNode,lItemTitle);
+  }
+  //for the other nodes
+  if( tiParentNode )
+  {
+   tiTestNode = tTree.InsertItem(sItemTitle, tiParentNode);
+   tTree.SetItemData(tiTestNode,lItemTitle);
+  }
+ }
+}
+
+8.增加消息响应函数：使用ClassWizard增加消息响应函数CLeftTreeView::OnSelchanged()
+
+void CLeftTreeView::OnSelchanged(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+ NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
+ // TODO: Add your control notification handler code here
+ TVITEM item = pNMTreeView->itemNew; 
+ CString strCurSelItemText = this->GetTreeCtrl().GetItemText(item.hItem); 
+ CMainFrame * pMainFrm = (CMainFrame*)AfxGetMainWnd();
+ CRightView * pRightView = (CRightView *)pMainFrm->m_wndSplitter.GetPane(0,1);
+ if(pRightView->m_TestDlg.GetSafeHwnd())
+ {
+  pRightView->m_TestDlg.SetDlgItemText(IDC_EDIT1,strCurSelItemText);
+ }
+ *pResult = 0;
+}
+
+9.在CRightView增加变量CTestDlg m_TestDlg;
+
+在 CRightView::OnInitialUpdate() 中添加代码：
+
+void CRightView::OnInitialUpdate() 
+{
+ CView::OnInitialUpdate();
+ // TODO: Add your specialized code here and/or call the base class 
+ if(!m_TestDlg.GetSafeHwnd()) //第一次初始化m_Tab 控件和page页的建立 
+ {
+  m_TestDlg.Create(IDD_TestDlg,this); 
+  m_TestDlg.ShowWindow(SW_SHOW);
+ } 
+ 
+}
+10.在vCRightView::OnSize()中添加代码：
+
+oid CRightView::OnSize(UINT nType, int cx, int cy) 
+{
+ CView::OnSize(nType, cx, cy);
+ // 让窗体覆盖在上面。 
+ if(m_TestDlg.GetSafeHwnd())
+ {
+  CRect rect;
+  GetClientRect(rect);
+  m_TestDlg.MoveWindow(rect);
+  m_TestDlg.ShowWindow(SW_SHOW);
+ }
+ // TODO: Add your message handler code here
+}
+
+11.编译运行！
+
+posted on 2007-05-24 08:19 唯月释怀 阅读(1076) 评论(5)  编辑 收藏 引用 
+
+ 
+Feedback
+# re: VC++窗口分割与通信实例 2007-10-06 10:13 aa 
+LeftTreeView.obj : error LNK2001: unresolved external symbol "public: virtual int __thiscall CLeftTreeView::IsSelected(class CObject const *)const " (?IsSelected@CLeftTreeView@@UBEHPBVCObject@@@Z) 
+Release/SplitWndDemo.exe : fatal error LNK1120: 1 unresolved externals 
+Error executing link.exe. 
+
+怎么回事?  回复  更多评论    
+
+# re: VC++窗口分割与通信实例 2007-10-06 10:26 aa 
+找到原因了是我加错了这个响应IsSelected  回复  更多评论    
+
+# re: VC++窗口分割与通信实例[未登录] 2007-11-27 00:16 th 
+你好，CTestDlg应该显示在 VCRightView里面，但我的为什么显示在CMainFrame的坐标（0。0）位置？请指点。  回复  更多评论    
+
+# re: VC++窗口分割与通信实例[未登录] 2007-11-27 11:40 th 
+找到原因了 我的CTestDlg对话框属性设置问题。  回复  更多评论    
+
+# re: VC++窗口分割与通信实例 2009-02-24 23:50 LOVE VC++ 
+谢谢你，很感谢  回复  更多评论    
+

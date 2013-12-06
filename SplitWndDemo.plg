@@ -1,0 +1,78 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: SplitWndDemo - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x804 /fo"Release/SplitWndDemo.res" /d "NDEBUG" "C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\SplitWndDemo.rc"" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP4DD.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Release/" /Fp"Release/SplitWndDemo.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\classtile.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\common.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\ExpMethod.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\ImportTile.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\LeftTreeView.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\MainFrm.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\Newmap.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\RightView.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\SplitWndDemo.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\SplitWndDemoDoc.cpp"
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\SplitWndDemoView.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP4DD.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP4DE.tmp" with contents
+[
+/nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Release/" /Fp"Release/SplitWndDemo.pch" /Yc"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP4DE.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP4DF.tmp" with contents
+[
+Msimg32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/MyTileEditor_V1.pdb" /machine:I386 /out:"Release/MyTileEditor_V1.exe" 
+".\Release\classtile.obj"
+".\Release\common.obj"
+".\Release\ExpMethod.obj"
+".\Release\ImportTile.obj"
+".\Release\LeftTreeView.obj"
+".\Release\MainFrm.obj"
+".\Release\Newmap.obj"
+".\Release\RightView.obj"
+".\Release\SplitWndDemo.obj"
+".\Release\SplitWndDemoDoc.obj"
+".\Release\SplitWndDemoView.obj"
+".\Release\StdAfx.obj"
+".\Release\SplitWndDemo.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP4DF.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+classtile.cpp
+common.cpp
+C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\common.cpp(58) : warning C4018: '<=' : signed/unsigned mismatch
+ExpMethod.cpp
+ImportTile.cpp
+LeftTreeView.cpp
+C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\LeftTreeView.cpp(137) : warning C4518: 'int ' : storage-class or type specifier(s) unexpected here; ignored
+C:\Documents and Settings\Administrator\桌面\new\simpleTileMapEditor\VC_CSplitterWnd\LeftTreeView.cpp(137) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+MainFrm.cpp
+Newmap.cpp
+RightView.cpp
+SplitWndDemo.cpp
+SplitWndDemoDoc.cpp
+SplitWndDemoView.cpp
+Generating Code...
+Linking...
+
+
+
+<h3>Results</h3>
+MyTileEditor_V1.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
